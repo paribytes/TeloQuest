@@ -16,7 +16,8 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 
 ## Requirements
 To run this pipeline, you'll need:
-* **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files). 
+* **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
+* **GDC Download Token**: Required to download the controlled access data
 * **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/))
 * **Java**: Required to run qmotif
 * **samtools**: Required to generate BAI files for the corresponding BAM files 
