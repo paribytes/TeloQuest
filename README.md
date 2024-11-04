@@ -2,7 +2,7 @@
 
 ## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation.
 
-This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomeric content using qmotif, saving output files with telomeric data, and building a machine learning model. Each step in the pipeline is outlined below, along with requirements and execution instructions.
+This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, and building a machine learning model. Each step in the pipeline is outlined below, along with requirements and execution instructions.
 
 We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
 
