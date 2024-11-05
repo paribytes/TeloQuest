@@ -21,11 +21,14 @@ To run this pipeline, you'll need:
 * **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/))
 * **Java**: Required to run qmotif
 * **samtools**: Required to generate BAI files for the corresponding BAM files 
-*  **bcftools**: Required to obtain variants 
-*  **anaconda for Jupyter notebook**: Required to build the machine learning model
+* **bcftools**: Required to obtain variants 
+* **anaconda for Jupyter notebook**: Required to build the machine learning model
 
-*  Additional files to prepare:
-* `TCGA_xyz.tsv`: Contains URLs of BAM files from the xyz TCGA project
+*  **Additional things to prepare:** 
+*  If you're only interested in certain chromosomal coordinates from the BAM file, then get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway).
+* Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
+* More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/)
+
 
 ## File Descriptions
 
