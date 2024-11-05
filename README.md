@@ -18,9 +18,9 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 To run this pipeline, you'll need:
 1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
 2. **GDC Download Token**: Required to download the controlled access data. Ensure that the token is in the same folder as the scripts. 
-3. **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/))
-4. **Java**: Required to run qmotif
-5. **samtools**: Required to generate BAI files for the corresponding BAM files 
+3. **samtools**: Required to generate BAI files for the corresponding BAM files 
+4. **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/))
+5. **Java**: Required to run qmotif
 6. **bcftools**: Required to obtain variants 
 7. **Anaconda for Jupyter notebook**: Required to build the machine learning model
 
@@ -34,6 +34,7 @@ To run this pipeline, you'll need:
 ## File Descriptions
 * **`Kidney_TCGA_KICH_curl.tsv`**: TSV file that contains all the UUIDs for the project you want the BAM files for. 
 * **`Kidney_TCGA_KICH_loop.sh`**: Bash script that performs a curl request and slices the BAM files according to the genomic regions provided.
+* **`bamindex.sh`**: Bash script that uses samtools to generate BAI files for the corresponding BAM files
 * **`Kidney_TCGA_KICH.py`**: Python script to run qmotif on BAM files to analyze telomere content.
 
 
@@ -46,8 +47,9 @@ To run this pipeline, you'll need:
 ## Sequence of Execution
 To use the pipeline, run the scripts in the following order:
 1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`)
-2. `Kidney_TCGA_KICH.py` (generates: `log.txt` and `output.txt` files)
-3. 
+2. `bamindex.sh` (requires: BAM files; generates: BAI files)
+3. `Kidney_TCGA_KICH.py` (requires: BAM and BAI files; generates: `log.txt` and `output.txt` files)
+4. 
 
 
 
