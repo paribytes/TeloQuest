@@ -47,8 +47,8 @@ To run this pipeline, you'll need:
 ## Sequence of Execution
 To use the pipeline, run the scripts in the following order:
 1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`)
-2. `bamindex.sh` (requires: BAM files; generates: BAI files)
-3. `Kidney_TCGA_KICH.py` (requires: BAM and BAI files; generates: `log.txt` and `output.txt` files)
+2. `bamindex.sh` (requires: BAM files, generates: BAI files)
+3. `Kidney_TCGA_KICH.py` (requires: BAM and BAI files, generates: `log.txt` and `output.txt` files)
 4. 
 
 
