@@ -17,7 +17,7 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 ## Requirements
 To run this pipeline, you'll need:
 1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
-2. **GDC Download Token**: Required to download the controlled access data. Ensure that the token is in the same folder as the scripts. 
+2. **GDC Download Token**: Required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time.
 3. **samtools**: Required to generate BAI files for the corresponding BAM files 
 4. **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/))
 5. **Java**: Required to run qmotif
