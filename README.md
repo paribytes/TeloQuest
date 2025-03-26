@@ -18,20 +18,24 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 To run this pipeline, you'll need:
 1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
 
-2. **GDC Download Token**: Required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time.
+2. **GDC Download Token**: Required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download controlled-access files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time. **Please be responsible with the tokens and do not share them with anyone, as this is controlled-access data**.
 
-3. **samtools**: Required to generate BAM Index (BAI) files for the corresponding BAM files 
+3. **samtools**: Required to generate BAM Index (BAI) files for the corresponding BAM files
+ 
 4. **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/)).
+
 5. **Java**: Required to run qmotif
-6. **bcftools**: Required to obtain variants 
+
+6. **bcftools**: Required to obtain variants for the 15 telomere related genes
+
 7. **Anaconda for Jupyter notebook**: Required to build the machine learning model
 
 *  **Additional things to prepare:** 
 *  If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
 * Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
 * Generate a similar TSV file using "Cohort Builder" on the GDC Data Portal.
-* Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files) 
-* More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/)
+* Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
+* More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
 
 
 ## File Descriptions
@@ -44,7 +48,7 @@ To run this pipeline, you'll need:
 
 
 
-* **Note**: The GDC Portal only lets you download BAM files for one project at a time. If you download two tokens at a time, it will automatically outdate/expire the second last token without even being used. Also, once you download the files with one token, that token will expire. So, every time you download something new you'll have to obtain a new token. 
+* **Note**: The GDC Portal allows you to download **BAM files and other controlled-access files for only one project at a time**. If you generate multiple tokens simultaneously, the system will automatically invalidate the second-to-last token, even if it has not been used. Additionally, once a token has been used to download files, it will immediately expire. Therefore, every time you need to download new files, you must obtain a **new token**.
 
 ## Usage
 ## Sequence of Execution
