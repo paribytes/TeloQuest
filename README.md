@@ -1,6 +1,6 @@
 # TeloQuest
 
-## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation.
+## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation!
 
 This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere related genes and building a machine learning model using all these features. Each step in the pipeline is outlined below, along with requirements and execution instructions.
 
@@ -8,6 +8,7 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 
 ## Table of Contents
 * Requirements
+* Additional Things to Prepare
 * File Descriptions
 * Usage
 * Detailed Steps
@@ -30,10 +31,57 @@ To run this pipeline, you'll need:
 
 7. **Anaconda for Jupyter notebook**: Required to build the machine learning model
 
-*  **Additional things to prepare:** 
-*  If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
+## **Additional Things to Prepare:** 
+* i.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
 * Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
-* Generate a similar TSV file using "Cohort Builder" on the GDC Data Portal.
+* Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
+
+//  **Steps to Download a Sample Sheet from the GDC Portal**  
+
+1. **Open the Cohort Builder**  
+   - Click on **Cohort Builder** and select the program (e.g., **TCGA**).  
+   - Choose the project (e.g., **TCGA-KICH**).  
+
+2. **Select Features for Your Cohort**  
+   - Customize your cohort by selecting relevant features such as:  
+     - **Disease type**  
+     - **Primary diagnosis**  
+     - **Primary site**  
+     - **Tissue or organ of origin**  
+     - **Gender, race, ethnicity**  
+     - **Vital status**  
+     - **Site of biopsy**  
+     - **Prior malignancy**  
+     - **Tissue type**  
+     - **Data format, etc.**  
+
+3. **Save Your Cohort**  
+   - Once all features are selected, click **Save the Cohort** and assign it a name.  
+
+4. **Access the Repository**  
+   - Navigate to the **Repository** and refine your selection by specifying:  
+     - **Experimental strategy**  
+     - **Data type**  
+     - **Data format**  
+     - **Type of access**  
+     - **Tissue type**  
+     - **Specimen type**  
+
+5. **Download the Sample Sheet**  
+   - Click the **Download Sample Sheet** button to generate a file containing the **UUIDs** for all selected files from your chosen project.  
+
+6. **Verify the Sample Sheet**  
+   - Review the downloaded file to ensure it includes all the selected features.  
+   - If working on multiple projects, give each sample sheet a **unique name** for better organization.  
+
+Hopefully, following these steps will ensure accurate and efficient cohort selection and data retrieval from the **GDC Portal**. 
+
+
+
+
+
+
+
 * Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
 * More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
 
