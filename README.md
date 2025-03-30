@@ -33,11 +33,12 @@ To run this pipeline, you'll need:
 
 ## **Additional Things to Prepare:** 
 * i.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
-* Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
-* Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
 
-//  **Steps to Download a Sample Sheet from the GDC Portal**  
+* ii.) Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
 
+* iii.) Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
+
+///  **Steps to Download a Sample Sheet with UUIDs from the GDC Portal:**  
 1. **Open the Cohort Builder**  
    - Click on **Cohort Builder** and select the program (e.g., **TCGA**).  
    - Choose the project (e.g., **TCGA-KICH**).  
@@ -59,7 +60,7 @@ To run this pipeline, you'll need:
    - Once all features are selected, click **Save the Cohort** and assign it a name.  
 
 4. **Access the Repository**  
-   - Navigate to the **Repository** and refine your selection by specifying:  
+   - Now, navigate to the **Repository** and refine your selection by specifying:  
      - **Experimental strategy**  
      - **Data type**  
      - **Data format**  
@@ -74,16 +75,8 @@ To run this pipeline, you'll need:
    - Review the downloaded file to ensure it includes all the selected features.  
    - If working on multiple projects, give each sample sheet a **unique name** for better organization.  
 
-Hopefully, following these steps will ensure accurate and efficient cohort selection and data retrieval from the **GDC Portal**. 
-
-
-
-
-
-
-
-* Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
-* More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
+* iv.) Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
+* v.) More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
 
 
 ## File Descriptions
