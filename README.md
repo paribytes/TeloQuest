@@ -2,7 +2,8 @@
 
 ## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation!
 
-This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere related genes and building a machine learning model using all these features. Each step in the pipeline is outlined below, along with requirements and execution instructions.
+* This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere related genes and building a machine learning model using all these features. 
+* Each step in the pipeline is outlined below, along with requirements and execution instructions.
 
 We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
 
@@ -19,7 +20,7 @@ We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the 
 To run this pipeline, you'll need:
 1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
 
-2. **GDC Download Token**: Required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download controlled-access files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time. **Please be responsible with the tokens and do not share them with anyone, as this is controlled-access data**.
+2. **GDC Download Token**: The token is required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download controlled-access files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time. **Please be responsible with the tokens and do not share them with anyone, as this is controlled-access data**.
 
 3. **samtools**: Required to generate BAM Index (BAI) files for the corresponding BAM files
  
