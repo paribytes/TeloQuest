@@ -81,10 +81,10 @@ To run this pipeline, you'll need:
 
 
 ## File Descriptions
-* **`Kidney_TCGA_KICH_curl.tsv`**: TSV file that contains all the UUIDs for the project you want the BAM files for. 
-* **`Kidney_TCGA_KICH_loop.sh`**: Bash script that performs a curl request and slices the BAM files according to the genomic regions provided.
-* **`bamindex.sh`**: Bash script that uses samtools to generate BAI files for the corresponding BAM files
-* **`Kidney_TCGA_KICH.py`**: Python script to run qmotif on BAM files to analyze telomere content.
+* **`Kidney_TCGA_KICH_curl.tsv`**: A TSV file containing all the UUIDs for the TCGA project of interest. This file specifically includes UUIDs for both normal and tumor BAM files from the TCGA-KICH project.
+* **`Kidney_TCGA_KICH_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are telomeric coordinates obtained using UCSC's LiftOver tool.
+* **`bamindex.sh`**: A Bash script that uses samtools to generate corresponding BAI index files for the downloaded BAM files.
+* **`Kidney_TCGA_KICH.py`**: A Python script that runs qmotif on the BAM and BAI files to analyze telomere content.
 
 
 
