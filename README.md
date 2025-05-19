@@ -85,7 +85,10 @@ To run this pipeline, you'll need:
 * **`Kidney_TCGA_KICH_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are telomeric coordinates obtained using UCSC's LiftOver tool.
 * **`bamindex.sh`**: A Bash script that uses samtools to generate corresponding BAI index files for the downloaded BAM files.
 * **`Kidney_TCGA_KICH.py`**: A Python script that runs qmotif on the BAM and BAI files to analyze telomere content.
-
+  
+* **`runbcftools.sh`**: A Bash script that runs the bcftools mpileup command on all BAM files to call variants for 15 telomere-related genes.
+* **`variantstxt.sh`**: A Bash script that loops over all generated VCF files and formats the variant data into TXT files. Each line is sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format for the corresponding BAM file.
+* **`allgenotype.py`**: A Python script that performs genotype encoding, mapping: "0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None
 
 
 
