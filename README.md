@@ -121,7 +121,7 @@ To use the pipeline, run the scripts in the following order:
 3. `Kidney_TCGA_KICH.py` (requires: qmotif, BAM and BAI files, generates: `log.txt` and `output.txt` files)
 4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere related genes)
 5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere related genes, generates: VCF files)
-6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files)
+6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files with variant data)
 7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
 
 
@@ -131,38 +131,78 @@ To use the pipeline, run the scripts in the following order:
 * **Note** : When working with long-running processes, such as data analysis scripts or large data transfers, it’s often helpful to use tools like `tmux` and `nohup` to keep the process running even if your session disconnects. Documentation on [tmux](https://github.com/tmux/tmux/wiki) and [nohup](https://phoenixnap.com/kb/linux-nohup) available here.
 
 ## Detailed Steps
-1. **Download BAM and BAI files**
-* Run `download_files.sh` to download the BAM and BAI files from NCBI’s 1000 Genomes Project server. Make sure to:
-* Include URLs for BAM and BAI files in `files_list.txt` and that both `download_files.sh` and `files_list.txt` are in the same folder.
+1. **Download the (sliced) BAM files for telomeric regions**
+* Run `Kidney_TCGA_KICH_loop.sh` to download the sliced BAM files from GDC Data Portal. Make sure to:
+* Include regions that you want the sliced BAM files to have and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
 
 ```
-chmod +x download_files.sh
+chmod +x Kidney_TCGA_KICH_loop.sh
 ```
 
 ```
-./download_files.sh
+./Kidney_TCGA_KICH_loop.sh
 ```
 **OR**
 
 ```
-bash download_files.sh
+bash Kidney_TCGA_KICH_loop.sh
 ```
 
-2. **Run qmotif with runqmotif.py**
-* Before running runqmotif.py, ensure qmotif is installed, and the path to qmotif and your BAM and BAI input files is set.
+2. **Get the BAM Index files for each BAM file**
+* Before running bamindex.sh, ensure samtools is installed, and that all the BAM files are located in the same directory.
 
 ```
-python3 runqmotif.py
+chmod +x bamindex.sh
 ```
 
-3. **Parse qmotif Log Files**
+```
+./bamindex.sh
+```
+**OR**
+
+```
+bash bamindex.sh
+```
+
+3. **Run qmotif with Kidney_TCGA_KICH.py**
+* Before running this script, make sure the following are in place:
+  1. qmotif is installed and accessible from your system's path.
+  2. You’ve set the correct paths to your qmotif executable, as well as your BAM and BAI input files.
+
+* This script expects input file names without extensions (i.e., no .bam or .bai).
+* A quick way to prepare the list:
+I copied the names of all the BAI files that were generated at the end of the previous script (bamindex.sh), pasted them into a Google Doc, and used Find and Replace (Cmd + F on Mac or Ctrl + F on Windows). I searched for “.bai” and replaced it with an empty string using Replace All.
+
+```
+python3 Kidney_TCGA_KICH.py
+```
+
+4. **Download the (sliced) BAM files for 15 telomere related genes regions**
+* Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from GDC Data Portal. Make sure to:
+* Include regions that you want the sliced BAM files to have and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
+
+```
+chmod +x Kidney_TCGA_KICH_gene_loop.sh
+```
+
+```
+./Kidney_TCGA_KICH_gene_loop.sh
+```
+**OR**
+
+```
+bash Kidney_TCGA_KICH_gene_loop.sh
+```
+
+//////
+4. **Parse qmotif Log Files**
 * Use `stage2.py` to parse log files created by `runqmotif.py`. This script will output telomere read counts for each chromosome in a file named `{sequence_name}_stage2_coverage.txt`.
 
 ```
 python3 stage2.py
 ```
 
-4. **Generate Chromosome-Level Tally of Telomeric reads**
+5. **Generate Chromosome-Level Tally of Telomeric reads**
 * Run `realcoverage.sh` to tally telomeric reads for each chromosome. This script uses the `chrnames` file, so make sure it’s in the same folder. 
 * **Note** : The `chrnames` file only has chromosome numbers for autosomes, sex chromosomes are not included.
 
@@ -170,7 +210,7 @@ python3 stage2.py
 bash realcoverage.sh
 ```
 
-5. **Extract Scaled Telomeric Reads for all the samples**
+6. **Extract Scaled Telomeric Reads for all the samples**
 *  Run `scaledgenomic.sh` file to extract scaled telomeric reads data from output files created by `runqmotif.py`. This generates a file named `ScaledGenomicOutput.txt`.
 
 ```
