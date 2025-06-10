@@ -103,6 +103,7 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 * **`Kidney_TCGA_KICH_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are telomeric coordinates obtained using UCSC's LiftOver tool.
 * **`bamindex.sh`**: A Bash script that uses samtools to generate corresponding BAI index files for the downloaded BAM files.
 * **`Kidney_TCGA_KICH.py`**: A Python script that runs qmotif on the BAM and BAI files to analyze telomere content.
+* **`Kidney_TCGA_KICH_gene_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are for 15 telomere-related genes.
 * **`runbcftools.sh`**: A Bash script that runs the bcftools mpileup command on all BAM files to call variants for 15 telomere-related genes.
 * **`variantstxt.sh`**: A Bash script that loops over all generated VCF files and formats the variant data into TXT files. Each line is sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format for the corresponding BAM file.
 * **`allgenotype.py`**: A Python script that performs genotype encoding, mapping: "0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None
@@ -115,12 +116,13 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 ## Usage
 ## Sequence of Execution
 To use the pipeline, run the scripts in the following order:
-1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`)
+1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to telomeric regions)
 2. `bamindex.sh` (requires: samtools, BAM files, generates: BAI files)
 3. `Kidney_TCGA_KICH.py` (requires: qmotif, BAM and BAI files, generates: `log.txt` and `output.txt` files)
-4. `runbcftools.sh` (requires: , generates: )
-5. `variantstxt.sh` (requires: , generates: )
-6. `allgenotype.py` (requires: , generates: )
+4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere related genes)
+5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere related genes, generates: VCF files)
+6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files)
+7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
 
 
 
