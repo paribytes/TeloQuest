@@ -120,20 +120,20 @@ To use the pipeline, run the scripts in the following order:
 2. `bamindex.sh` (requires: samtools, BAM files, generates: BAI files)
 3. `Kidney_TCGA_KICH.py` (requires: qmotif, BAM and BAI files, generates: `log.txt` and `output.txt` files)
 4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere-related genes)
-5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere related genes, generates: VCF files)
+5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere-related genes, generates: VCF files)
 6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files with variant data)
 7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
 
 
 
-* **Download Recommendations** : For optimal performance when downloading these files, we recommend using a Linux-based system or macOS. Due to the large file sizes, these operating systems tend to handle extensive downloads more reliably and efficiently than some alternatives. Additionally, we suggest ensuring a stable internet connection to minimize interruptions during the download process.
+* **Download Recommendations**: For optimal performance when downloading these files, we recommend using a Linux-based system or macOS. Due to the large file sizes, these operating systems tend to handle extensive downloads more reliably and efficiently than some alternatives. Additionally, we suggest ensuring a stable internet connection to minimize interruptions during the download process.
 
-* **Note** : When working with long-running processes, such as data analysis scripts or large data transfers, it’s often helpful to use tools like `tmux` and `nohup` to keep the process running even if your session disconnects. Documentation on [tmux](https://github.com/tmux/tmux/wiki) and [nohup](https://phoenixnap.com/kb/linux-nohup) available here.
+* **Note**: When working with long-running processes, such as data analysis scripts or large data transfers, it’s often helpful to use tools like `tmux` and `nohup` to keep the process running even if your session disconnects. Documentation on [tmux](https://github.com/tmux/tmux/wiki) and [nohup](https://phoenixnap.com/kb/linux-nohup) available here.
 
 ## Detailed Steps
 1. **Download the (sliced) BAM files for telomeric regions**
-* Run `Kidney_TCGA_KICH_loop.sh` to download the sliced BAM files from GDC Data Portal. Make sure to:
-* Include regions that you want the sliced BAM files to have and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
+* Run `Kidney_TCGA_KICH_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
+* Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
 
 ```
 chmod +x Kidney_TCGA_KICH_loop.sh
@@ -171,15 +171,15 @@ bash bamindex.sh
 
 * This script expects input file names without extensions (i.e., no .bam or .bai).
 * A quick way to prepare the list:
-I copied the names of all the BAI files that were generated at the end of the previous script (bamindex.sh), pasted them into a Google Doc, and used Find and Replace (Cmd + F on Mac or Ctrl + F on Windows). I searched for “.bai” and replaced it with an empty string using Replace All.
+I copied the names of all the BAI files generated at the end of the previous script (bamindex.sh), pasted them into a Google Doc, and used the Find and Replace feature (Cmd + F on Mac or Ctrl + F on Windows). I searched for “.bai” and replaced it with an empty string using the Replace All feature.
 
 ```
 python3 Kidney_TCGA_KICH.py
 ```
 
-4. **Download the (sliced) BAM files for 15 telomere related genes regions**
-* Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from GDC Data Portal. Make sure to:
-* Include regions that you want the sliced BAM files to have and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
+4. **Download the (sliced) BAM files for 15 telomere-related genes regions**
+* Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
+* Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
 
 ```
 chmod +x Kidney_TCGA_KICH_gene_loop.sh
@@ -204,7 +204,7 @@ python3 stage2.py
 
 5. **Generate Chromosome-Level Tally of Telomeric reads**
 * Run `realcoverage.sh` to tally telomeric reads for each chromosome. This script uses the `chrnames` file, so make sure it’s in the same folder. 
-* **Note** : The `chrnames` file only has chromosome numbers for autosomes, sex chromosomes are not included.
+* **Note**: The `chrnames` file only has chromosome numbers for autosomes; sex chromosomes are not included.
 
 ```
 bash realcoverage.sh
@@ -219,12 +219,13 @@ bash scaledgenomic.sh
 
 ## Outputs
 
-* `{sequence_name}_stage2_coverage.txt`: Chromosome-specific telomeric read counts (output of `stage2.py`)
-* `stage2coverage`: Combined telomeric read counts for each chromosome across all sequences (output of `realcoverage.sh`)
-* `ScaledGenomicOutput.txt`: Scaled telomeric reads for all the sequences
-* `output_coverage_filenames`: This file lists all files ending with `_coverage.txt`(output of `realcoverage.sh`)
-*  Example output files generated by the **qmotif** tool are included in the `supplementary_data` directory. These files serve as reference outputs to understand the results produced by the qmotif analysis process.
-
+1. `{ProjectID}_${CaseID}_${SampleType}.bam`: BAM files sliced according to telomeric regions (output of `Kidney_TCGA_KICH_loop.sh`)
+2. `{filename}.bai`: BAM index (BAI) files for the sliced BAM files (output of `bamindex.sh`)
+3. `{sequence_name}_terminal_output.txt`: Chromosome-specific telomeric read counts (output of `Kidney_TCGA_KICH.py`)
+4. `{ProjectID}_${CaseID}_${SampleType}.bam`: BAM files sliced according to the telomere-related genes (output of `Kidney_TCGA_KICH_gene_loop.sh`) 
+5. `{base_name}_variants.vcf.gz`: VCF file containing the genomic variants info for each file (output of `runbcftools.sh`)
+6. `{basename}.txt`: Generates a TXT file from the VCF file in the CHROM\tPOS\tREF\tALT\t%GT\n format (output of `variantstxt.sh`)
+7. `{ProjectID}_mutation_summary.csv`: A CSV file that has the mutation summary of all samples for that TCGA Project (output of `allgenotype.py`)
 
 ## Contact
 * If you’d like to discuss this project or get in touch for other inquiries, please email me at priyanshishah213@gmail.com or connect with me on [LinkedIn](https://www.linkedin.com/in/priyanshi-p-shah/).
