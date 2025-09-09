@@ -8,13 +8,13 @@
 We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
 
 ## Table of Contents
-* Requirements
-* Additional Things to Prepare
-* File Descriptions
-* Usage
-* Detailed Steps
-* Outputs
-* Contact
+* [Requirements](#requirements)
+* [Additional Things to Prepare](#additional-things-to-prepare)
+* [File Descriptions](#file-descriptions)
+* [Usage](#usage)
+* [Detailed Steps](#detailed-steps)
+* [Outputs](#outputs)
+* [Contact](#contact)
 
 ## Requirements
 To run this pipeline, you'll need:
@@ -28,14 +28,14 @@ To run this pipeline, you'll need:
 
 5. **Java**: Required to run qmotif
 
-6. **bcftools**: Required to obtain variants for the 15 telomere related genes
+6. **bcftools**: Required to obtain variants for the 15 telomere-related genes
 
 7. **Anaconda for Jupyter notebook**: Required to build the machine learning model
 
 ## **Additional Things to Prepare:** 
 * I.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
 
-* II.) Refer to sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
+* II.) Refer to the sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
 
 * III.) Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
 
@@ -79,7 +79,7 @@ To run this pipeline, you'll need:
 * IV.) Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
 * v.) More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
 
-## Gene symbols, names and genomic coordinates of the 15 telomere related genes for which variants have been captured from the paper by Burren et al. (2024).
+## Gene symbols, names, and genomic coordinates of the 15 telomere-related genes for which variants have been captured from the paper by Burren et al. (2024).
 
 No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 1.	DCLRE1B -	DNA cross-link repair 1B	- chr1:113905326-113914086
@@ -119,7 +119,7 @@ To use the pipeline, run the scripts in the following order:
 1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to telomeric regions)
 2. `bamindex.sh` (requires: samtools, BAM files, generates: BAI files)
 3. `Kidney_TCGA_KICH.py` (requires: qmotif, BAM and BAI files, generates: `log.txt` and `output.txt` files)
-4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere related genes)
+4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere-related genes)
 5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere related genes, generates: VCF files)
 6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files with variant data)
 7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
