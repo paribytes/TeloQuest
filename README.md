@@ -7,9 +7,9 @@
 
 We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
 
-<img src="teloquest.png" alt="Teloquest plot" width="600"/>
+<img src="teloquest.png" alt="Teloquest plot" width="800"/>
 
-**Figure 1. TeloQuest Pipeline**
+**Figure 1. TeloQuest Pipeline:**
 A schematic overview of the TeloQuest pipeline used to predict tumor status based on phenotypic data, telomeric read content, and genomic variants. The pipeline consists of the following key steps: (1) Downloading phenotypic data for all 33 cancer types from The Cancer Genome Atlas (TCGA) and compiling it into a CSV file; (2) Downloading whole-genome sequencing (WGS) BAM files, slicing the BAM files according to telomeric regions, using the qmotif pipeline to quantify the telomeric reads, which are then compiled into a CSV file; (3) Re-downloading the same WGS BAM files, slicing them at the loci of 15 telomere length-associated genes, and identifying variants using bcftools “mpileup” command, followed by integration of variants data into the existing CSV file containing phenotypic and telomeric read information. The final integrated CSV file then serves as the input for training the machine learning model for tumor prediction. [Figure created with BioRender.com].
 
 ## Table of Contents
