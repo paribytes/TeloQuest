@@ -2,7 +2,7 @@
 
 ## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation!
 
-* This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere related genes and building a machine learning model using all these features. 
+* This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere-related genes, and building a machine learning model using all these features. 
 * Each step in the pipeline is outlined below, along with requirements and execution instructions.
 
 We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
@@ -19,6 +19,7 @@ A schematic overview of the TeloQuest pipeline used to predict tumor status base
 * [Usage](#usage)
 * [Detailed Steps](#detailed-steps)
 * [Outputs](#outputs)
+* [Citation](#citation)
 * [Contact](#contact)
 
 ## Requirements
@@ -236,6 +237,13 @@ bash scaledgenomic.sh
 5. `{base_name}_variants.vcf.gz`: VCF file containing the genomic variants info for each file (output of `runbcftools.sh`)
 6. `{basename}.txt`: Generates a TXT file from the VCF file in the CHROM\tPOS\tREF\tALT\t%GT\n format (output of `variantstxt.sh`)
 7. `{ProjectID}_mutation_summary.csv`: A CSV file that has the mutation summary of all samples for that TCGA Project (output of `allgenotype.py`)
+
+## Citation
+ If you use TeloQuest, please cite our [paper](https://academic.oup.com/biomethods/article/10/1/bpaf069/8254362)
+
+```
+Shah, P., & Sethuraman, A. (2025a). A novel machine learning approach for tumor detection based on telomeric signatures. Biology Methods and Protocols, 10(1). https://doi.org/10.1093/biomethods/bpaf069 
+```
 
 ## Contact
 * If you’d like to discuss this project or get in touch for other inquiries, please email me at priyanshishah213@gmail.com or connect with me on [LinkedIn](https://www.linkedin.com/in/priyanshi-p-shah/).
