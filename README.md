@@ -120,8 +120,6 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 * **`allgenotype.py`**: A Python script that performs genotype encoding, mapping: "0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None
 
 
-
-
 * **Note**: The GDC Portal allows you to download **BAM files and other controlled-access files for only one project at a time**. If you generate multiple tokens simultaneously, the system will automatically invalidate the second-to-last token, even if it has not been used. Additionally, once a token has been used to download files, it will immediately expire. Therefore, every time you need to download new files, you must obtain a **new token**.
 
 ## Usage
@@ -134,7 +132,6 @@ To use the pipeline, run the scripts in the following order:
 5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere-related genes, generates: VCF files)
 6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files with variant data)
 7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
-
 
 
 * **Download Recommendations**: For optimal performance when downloading these files, we recommend using a Linux-based system or macOS. Due to the large file sizes, these operating systems tend to handle extensive downloads more reliably and efficiently than some alternatives. Additionally, we suggest ensuring a stable internet connection to minimize interruptions during the download process.
@@ -189,44 +186,47 @@ python3 Kidney_TCGA_KICH.py
 ```
 
 4. **Download the (sliced) BAM files for 15 telomere-related genes regions**
-* Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
-* Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
 
-```
+- Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
+- Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
+
+​```
 chmod +x Kidney_TCGA_KICH_gene_loop.sh
-```
+​```
 
-```
+​```
 ./Kidney_TCGA_KICH_gene_loop.sh
-```
+​```
+
 **OR**
 
-```
+​```
 bash Kidney_TCGA_KICH_gene_loop.sh
-```
+​```
 
-//////
-4. **Parse qmotif Log Files**
-* Use `stage2.py` to parse log files created by `runqmotif.py`. This script will output telomere read counts for each chromosome in a file named `{sequence_name}_stage2_coverage.txt`.
+5. **Call variants using bcftools**
 
-```
-python3 stage2.py
-```
+- Run `runbcftools.sh` to call variants for the 15 telomere-related genes across all sliced BAM files. Make sure the GRCh38 reference FASTA (`GRCh38.d1.vd1.fa`) is in the same folder.
 
-5. **Generate Chromosome-Level Tally of Telomeric reads**
-* Run `realcoverage.sh` to tally telomeric reads for each chromosome. This script uses the `chrnames` file, so make sure it’s in the same folder. 
-* **Note**: The `chrnames` file only has chromosome numbers for autosomes; sex chromosomes are not included.
+​```
+bash runbcftools.sh
+​```
 
-```
-bash realcoverage.sh
-```
+6. **Format variants into TXT files**
 
-6. **Extract Scaled Telomeric Reads for all the samples**
-*  Run `scaledgenomic.sh` file to extract scaled telomeric reads data from output files created by `runqmotif.py`. This generates a file named `ScaledGenomicOutput.txt`.
+- Run `variantstxt.sh` to convert the VCF files into TXT files, with each line sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format.
 
-```
-bash scaledgenomic.sh
-```
+​```
+bash variantstxt.sh
+​```
+
+7. **Encode genotypes into a summary CSV**
+
+- Run `allgenotype.py` to encode genotypes ("0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None) and generate the final mutation summary CSV file used for the machine learning model.
+
+​```
+python3 allgenotype.py
+​```
 
 ## Outputs
 
