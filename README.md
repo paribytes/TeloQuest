@@ -190,43 +190,43 @@ python3 Kidney_TCGA_KICH.py
 - Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
 - Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
 
-​```
+```
 chmod +x Kidney_TCGA_KICH_gene_loop.sh
-​```
+```
 
-​```
+```
 ./Kidney_TCGA_KICH_gene_loop.sh
-​```
+```
 
 **OR**
 
-​```
+```
 bash Kidney_TCGA_KICH_gene_loop.sh
-​```
+```
 
 5. **Call variants using bcftools**
 
 - Run `runbcftools.sh` to call variants for the 15 telomere-related genes across all sliced BAM files. Make sure the GRCh38 reference FASTA (`GRCh38.d1.vd1.fa`) is in the same folder.
 
-​```
+```
 bash runbcftools.sh
-​```
+```
 
 6. **Format variants into TXT files**
 
 - Run `variantstxt.sh` to convert the VCF files into TXT files, with each line sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format.
 
-​```
+```
 bash variantstxt.sh
-​```
+```
 
 7. **Encode genotypes into a summary CSV**
 
 - Run `allgenotype.py` to encode genotypes ("0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None) and generate the final mutation summary CSV file used for the machine learning model.
 
-​```
+```
 python3 allgenotype.py
-​```
+```
 
 ## Outputs
 
