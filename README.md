@@ -11,13 +11,14 @@ A schematic overview of the TeloQuest pipeline used to predict tumor status base
 * [Requirements](#requirements)
 * [Additional Things to Prepare](#additional-things-to-prepare)
 * [File Descriptions](#file-descriptions)
-* [Usage](#usage)
 * [Repository Structure](#repository-structure)
 * [Setup](#setup)
+* [Usage](#usage)
 * [Outputs](#outputs)
 * [Citation](#citation)
 * [Contact](#contact)
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Requirements
 To run this pipeline, you'll need:
 1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (the BAM files).
@@ -47,6 +48,7 @@ Schematic representation of the qmotif-based pipeline used to estimate telomere 
 
 5. **Java**: Required to run qmotif
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## **Additional Things to Prepare:** 
 I.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
 
@@ -79,6 +81,7 @@ IV.) Reference Genome FASTA `(GRCh38.d1.vd1.fa)` and FASTA index files `(GRCh38.
 
 V.) More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Gene symbols, names, and genomic coordinates of the 15 telomere-related genes for which variants are captured, from [Burren et al. (2024)](https://www.nature.com/articles/s41588-024-01884-7).
 
 No.	Gene Symbol	- Gene Full Name - Genomic coordinates
@@ -98,6 +101,7 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 14.	SAMHD1	- SAM and HD domain containing deoxynucleoside triphosphate triphosphohydrolase 1	- chr20:36890229-36951708
 15.	RTEL1	- Regulator of telomere elongation helicase 1	- chr20:63658312-63696245
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## File Descriptions
 
 * **`Snakefile`** — defines the full pipeline as a set of Snakemake rules, run per sample
@@ -111,6 +115,7 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 
 * **Note**: This pipeline previously ran as a set of standalone scripts executed manually in sequence, looping over hardcoded sample lists. It has since been converted to a Snakemake pipeline: each script now processes one sample at a time, and Snakemake automatically handles looping, dependency tracking, and resuming after failures.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Repository Structure
 ```
 TeloQuest/
@@ -128,6 +133,7 @@ TeloQuest/
 └── README.md
 ```
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Setup
 
 1. Clone the repository
@@ -187,7 +193,7 @@ If your TSV was edited in Excel, check for hidden carriage returns or blank trai
 ```
 tr -d '\r' < your_file.tsv | grep -v '^[[:space:]]*$' > cleaned_file.tsv
 ```
-
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Usage
 
 Activate the pipeline environment:
@@ -217,6 +223,7 @@ On Linux or an HPC cluster, submit this as a background/queued job instead — s
 
 If the pipeline stops partway through (e.g., due to token expiry or a network interruption), just rerun the same `snakemake` command — completed steps are cached and won't be redone.
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Outputs
 
 * `data/{sample}_telomere.bam` and `.bai` — sliced/indexed BAM files for telomeric regions
@@ -226,12 +233,13 @@ If the pipeline stops partway through (e.g., due to token expiry or a network in
 * `txt/{sample}_variants.txt` — plain-text genotype calls per sample, in CHROM\tPOS\tREF\tALT\t%GT\n format
 * `results/mutation_summary.csv` — final mutation summary across all samples, used as input for the machine learning model
 
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Citation
  If you use TeloQuest, please cite our [paper](https://academic.oup.com/biomethods/article/10/1/bpaf069/8254362)
 
 ```
 Shah, P., & Sethuraman, A. (2025a). A novel machine learning approach for tumor detection based on telomeric signatures. Biology Methods and Protocols, 10(1). https://doi.org/10.1093/biomethods/bpaf069 
 ```
-
+------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Contact
 * If you’d like to discuss this project or get in touch for other inquiries, please email me at priyanshishah213@gmail.com or connect with me on [LinkedIn](https://www.linkedin.com/in/priyanshi-p-shah/).
