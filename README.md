@@ -168,12 +168,12 @@ Update the paths at the top of the Snakefile, `run_bcftools.sh`, and `variants_t
 
 4. GDC authentication token
 
-Generate a token from the GDC Data Portal (requires dbGaP authorized access) and save it as `gdc-user-token.txt` in the repo root. See the token notes under [Requirements](#requirements).
+Generate a token from the GDC Data Portal (requires dbGaP authorized access) and save it as `gdc-user-token.txt` in the repo root. See the token notes under [Requirements](#requirements.)
 
 
 5. Reference genome
 
-Place `GRCh38.d1.vd1.fa` in the repo root (see [Additional Things to Prepare](#additional-things-to-prepare)).
+Place `GRCh38.d1.vd1.fa` in the repo root (see [Additional Things to Prepare](#additional-things-to-prepare).)
 
 6. qmotif
 
@@ -181,7 +181,7 @@ Make sure `qmotif` and its dependencies are on your PATH, and that `qmotif.ini` 
 
 7. Sample sheet
 
-Provide your TSV file (see [Additional Things to Prepare](#additional-things-to-prepare)), named to match what's referenced at the top of the Snakefile.
+Provide your TSV file (see [Additional Things to Prepare](#additional-things-to-prepare) ), named to match what's referenced at the top of the Snakefile.
 
 If your TSV was edited in Excel, check for hidden carriage returns or blank trailing lines, which can cause sample-parsing errors. Clean these with:
 ```
