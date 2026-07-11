@@ -12,6 +12,7 @@ A schematic overview of the TeloQuest pipeline used to predict tumor status base
 * [Additional Things to Prepare](#additional-things-to-prepare)
 * [File Descriptions](#file-descriptions)
 * [Usage](#usage)
+* [Repository Structure](#repository-structure)
 * [Setup](#setup)
 * [Outputs](#outputs)
 * [Citation](#citation)
@@ -109,6 +110,23 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 * **`aggregate_genotypes.py`** — encodes genotypes ("0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None) across all samples and produces the final mutation summary CSV
 
 * **Note**: This pipeline previously ran as a set of standalone scripts executed manually in sequence, looping over hardcoded sample lists. It has since been converted to a Snakemake pipeline: each script now processes one sample at a time, and Snakemake automatically handles looping, dependency tracking, and resuming after failures.
+
+## Repository Structure
+```
+TeloQuest/
+├── Snakefile
+├── Kidney_TCGA_KICH_curl.tsv
+├── gdc-user-token.txt          (not included — see Setup)
+├── GRCh38.d1.vd1.fa             (not included — see Setup)
+├── qmotif.ini
+├── slice_bam_telomere.sh
+├── slice_bam_genes.sh
+├── run_qmotif.py
+├── run_bcftools.sh
+├── variants_to_txt.sh
+├── aggregate_genotypes.py
+└── README.md
+```
 
 ## Setup
 
