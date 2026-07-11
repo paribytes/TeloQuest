@@ -84,22 +84,23 @@ V.) More information on BAM slicing using GDC Data Portal is available [here](ht
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Gene symbols, names, and genomic coordinates of the 15 telomere-related genes for which variants are captured, from [Burren et al. (2024)](https://www.nature.com/articles/s41588-024-01884-7).
 
-No.	Gene Symbol	- Gene Full Name - Genomic coordinates
-1.	DCLRE1B -	DNA cross-link repair 1B	- chr1:113905326-113914086
-2.	NAF1 -	Nuclear assembly factor 1 ribonucleoprotein	- chr4:163128669-163166890
-3.	TERT -	Telomerase reverse transcriptase	- chr5:1253167-1295068
-4.	G3BP1	- G3BP stress granule assembly factor 1	- chr5:151771954-151812785
-5.	ZNF451 - Zinc finger protein 451	- chr6:57090188-57170305
-6.	POT1	- Protection of telomeres 1	- chr7:124822386-124929825
-7.	TERF1	- Telomeric repeat binding factor 1	- chr8:73008864-73048123
-8.	STN1	- STN1 subunit of CST complex	- chr10:103877569-103918184
-9.	ATM	- ATM serine/threonine kinase	- chr11:108223067-108369102
-10.	TINF2	- TERF1 interacting nuclear factor 2	- chr14:24239643-24242623
-11.	PARN	- Poly(A)-specific ribonuclease	- chr16:14435701-14630260
-12.	CTC1	- CST telomere replication complex component 1	- chr17:8224815-8248056
-13.	BRIP1	- BRCA1 interacting DNA helicase 1	- chr17:61679139-61863528
-14.	SAMHD1	- SAM and HD domain containing deoxynucleoside triphosphate triphosphohydrolase 1	- chr20:36890229-36951708
-15.	RTEL1	- Regulator of telomere elongation helicase 1	- chr20:63658312-63696245
+| No. | Gene Symbol | Gene Full Name | Genomic Coordinates |
+|---|---|---|---|
+| 1 | DCLRE1B | DNA cross-link repair 1B | chr1:113905326-113914086 |
+| 2 | NAF1 | Nuclear assembly factor 1 ribonucleoprotein | chr4:163128669-163166890 |
+| 3 | TERT | Telomerase reverse transcriptase | chr5:1253167-1295068 |
+| 4 | G3BP1 | G3BP stress granule assembly factor 1 | chr5:151771954-151812785 |
+| 5 | ZNF451 | Zinc finger protein 451 | chr6:57090188-57170305 |
+| 6 | POT1 | Protection of telomeres 1 | chr7:124822386-124929825 |
+| 7 | TERF1 | Telomeric repeat binding factor 1 | chr8:73008864-73048123 |
+| 8 | STN1 | STN1 subunit of CST complex | chr10:103877569-103918184 |
+| 9 | ATM | ATM serine/threonine kinase | chr11:108223067-108369102 |
+| 10 | TINF2 | TERF1 interacting nuclear factor 2 | chr14:24239643-24242623 |
+| 11 | PARN | Poly(A)-specific ribonuclease | chr16:14435701-14630260 |
+| 12 | CTC1 | CST telomere replication complex component 1 | chr17:8224815-8248056 |
+| 13 | BRIP1 | BRCA1 interacting DNA helicase 1 | chr17:61679139-61863528 |
+| 14 | SAMHD1 | SAM and HD domain containing deoxynucleoside triphosphate triphosphohydrolase 1 | chr20:36890229-36951708 |
+| 15 | RTEL1 | Regulator of telomere elongation helicase 1 | chr20:63658312-63696245 |
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 ## File Descriptions
