@@ -168,7 +168,7 @@ Update the paths at the top of the Snakefile, `run_bcftools.sh`, and `variants_t
 
 4. GDC authentication token
 
-Generate a token from the GDC Data Portal (requires dbGaP authorized access) and save it as `gdc-user-token.txt` in the repo root. See the token notes under [Requirements](#requirements.)
+Generate a token from the GDC Data Portal (requires dbGaP authorized access) and save it as `gdc-user-token.txt` in the repo root. See the token notes under [Requirements](#requirements).
 
 
 5. Reference genome
