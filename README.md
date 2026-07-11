@@ -1,11 +1,6 @@
-# TeloQuest
+# TeloQuest: Telomere-Based Tumor Classification Pipeline
 
-## TeloQuest is a machine learning pipeline on a mission to uncover tumor status by analyzing telomere content variation!
-
-* This repository contains scripts and instructions for downloading BAM files for all TCGA projects from the GDC data portal, analyzing telomere content using qmotif, saving output files with telomere data, extracting variant information for 15 telomere-related genes, and building a machine learning model using all these features. 
-* Each step in the pipeline is outlined below, along with requirements and execution instructions.
-
-We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/) to access the BAM files for all the TCGA projects. 
+This repository presents a Snakemake pipeline for downloading BAM files for TCGA projects from the GDC Data Portal, estimating telomere content using qmotif, extracting variant information for 15 telomere-related genes, and producing a summary CSV used to train a machine learning model for tumor classification. We utilized the [GDC Data Portal](https://portal.gdc.cancer.gov/)  to access the BAM files for all TCGA projects.
 
 <img src="teloquest.png" alt="Teloquest plot" width="800"/>
 
@@ -17,20 +12,32 @@ A schematic overview of the TeloQuest pipeline used to predict tumor status base
 * [Additional Things to Prepare](#additional-things-to-prepare)
 * [File Descriptions](#file-descriptions)
 * [Usage](#usage)
-* [Detailed Steps](#detailed-steps)
+* [Setup](#setup)
 * [Outputs](#outputs)
 * [Citation](#citation)
 * [Contact](#contact)
 
 ## Requirements
 To run this pipeline, you'll need:
-1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (aka the BAM files).
+1. **Controlled-data Access Authorization**: Follow the steps on [GDC](https://gdc.cancer.gov/access-data/obtaining-access-controlled-data) to get access to the controlled data (the BAM files).
 
-2. **GDC Download Token**: The token is required to download the controlled access data. To download controlled-access data, ensure that the authentication token is stored in the same folder as the scripts. The token is valid for **30 days** from the date of download and can only be used once. For instance, if you use a token to download BAM files for the **TCGA-ACC** project, you will need a new token to download BAM files for the **TCGA-GBM** project. Additionally, you can only download controlled-access files for **one project at a time**—requesting a new token will immediately invalidate the previous one. However, if multiple team members have access to the portal, each person can generate and use their own individual tokens at the same time. **Please be responsible with the tokens and do not share them with anyone, as this is controlled-access data**.
+2. **GDC Download Token**: Required to download controlled-access data. Save it as gdc-user-token.txt in the repo root.
 
-3. **samtools**: Required to generate BAM Index (BAI) files for the corresponding BAM files
+* Tokens are valid for 30 days from the date of issue and can be reused for multiple downloads within that window — they are not single-use.
+* Generating a new token immediately invalidates the previous one, so avoid regenerating mid-run.
+* If multiple team members have portal access, each person can generate and use their own individual token independently.
+**Please be responsible with tokens and do not share them, as this is controlled-access data**.
+
+3. **Conda environments for the following tools, pinned to specific versions** (see [Setup](#setup) for why):
+
+* Snakemake
+* samtools 1.12 — used to generate BAM Index (BAI) files
+* bcftools 1.21 — used to call variants for the 15 telomere-related genes
+* pandas — used for genotype aggregation
  
 4. **qmotif**: Download and install qmotif ([Documentation here](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_0/)).
+
+* A note on qmotif scaling: qmotif normalizes raw motif counts against a BAM file's total read count, scaled to 1 billion reads, so that samples with different sequencing depths can be compared on the same scale. This scaling treats every read equally and doesn't account for factors like unmapped reads or copy number changes (e.g., whole-arm amplifications), since there's no single "correct" way to adjust for those in tumor samples. Despite this simplicity, qmotif's scaled scores have been shown to correlate well with wet-lab telomere length measurements. See the qmotif [documentation](https://adamajava.readthedocs.io/en/latest/qmotif/qmotif_1_2/) for more detail.
 
 <img src="telotales.png" alt="Telotales plot" width="600"/>
 
@@ -39,58 +46,39 @@ Schematic representation of the qmotif-based pipeline used to estimate telomere 
 
 5. **Java**: Required to run qmotif
 
-6. **bcftools**: Required to obtain variants for the 15 telomere-related genes
-
-7. **Anaconda for Jupyter notebook**: Required to build the machine learning model
-
 ## **Additional Things to Prepare:** 
-* I.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
+I.) If you're only interested in certain chromosomal coordinates from the BAM file, get the specific coordinates using [UCSC's Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway). TCGA data on the GDC Portal has been harmonized and mapped to the GRCh38 human reference genome build, so please be aware of this when you get the coordinates and ensure they are from the correct build. 
 
-* II.) Refer to the sample script `Kidney_TCGA_KICH_loop.sh` which utilizes the BAM files for UUIDs mentioned in the TSV file - `Kidney_TCGA_KICH_curl.tsv`
+II.) Refer to the sample TSV file `Kidney_TCGA_KICH_curl.tsv`, which lists UUIDs used by the pipeline.
 
-* III.) Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
+III.) Generate a similar TSV file using "Cohort Builder" and "Repository" on the GDC Data Portal. 
 
-///  **Steps to Download a Sample Sheet with UUIDs from the GDC Portal:**  
+=> **Steps to Download a Sample Sheet with UUIDs from the GDC Portal:**  
 1. **Open the Cohort Builder**  
    - Click on **Cohort Builder** and select the program (e.g., **TCGA**).  
    - Choose the project (e.g., **TCGA-KICH**).  
 
 2. **Select Features for Your Cohort**  
-   - Customize your cohort by selecting relevant features such as:  
-     - **Disease type**  
-     - **Primary diagnosis**  
-     - **Primary site**  
-     - **Tissue or organ of origin**  
-     - **Gender, race, ethnicity**  
-     - **Vital status**  
-     - **Site of biopsy**  
-     - **Prior malignancy**  
-     - **Tissue type**  
-     - **Data format, etc.**  
+   - Customize your cohort by selecting relevant features such as: **Disease type**, **Primary diagnosis**, **Primary site**, **Tissue or organ of origin**, **Gender, race, ethnicity**, **Vital status**, **Site of biopsy**, **Prior malignancy**, **Tissue type**, **Data format, etc.**  
 
 3. **Save Your Cohort**  
-   - Once all features are selected, click **Save the Cohort** and assign it a name.  
+   - Click **Save the Cohort** and assign it a name.  
 
 4. **Access the Repository**  
-   - Now, navigate to the **Repository** and refine your selection by specifying:  
-     - **Experimental strategy**  
-     - **Data type**  
-     - **Data format**  
-     - **Type of access**  
-     - **Tissue type**  
-     - **Specimen type**  
+   - Navigate to the **Repository** and refine your selection by specifying: **Experimental strategy**, **Data type**, **Data format**, **Type of access**, **Tissue type**, **Specimen type, etc.** 
 
 5. **Download the Sample Sheet**  
-   - Click the **Download Sample Sheet** button to generate a file containing the **UUIDs** for all selected files from your chosen project.  
+   - Click **Download Sample Sheet** to generate a file containing the **UUIDs** for all selected files.  
 
 6. **Verify the Sample Sheet**  
    - Review the downloaded file to ensure it includes all the selected features.  
    - If working on multiple projects, give each sample sheet a **unique name** for better organization.  
 
-* IV.) Reference Genome FASTA (GRCh38.d1.vd1.fa) and FASTA index files (GRCh38.d1.vd1.fa.fai) were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
-* v.) More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
+IV.) Reference Genome FASTA `(GRCh38.d1.vd1.fa)` and FASTA index files `(GRCh38.d1.vd1.fa.fai)` were obtained from [NCI's website](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files). 
 
-## Gene symbols, names, and genomic coordinates of the 15 telomere-related genes for which variants have been captured from the paper by Burren et al. (2024).
+V.) More information on BAM slicing using GDC Data Portal is available [here](https://docs.gdc.cancer.gov/Data_Portal/Users_Guide/BAMslicing/).
+
+## Gene symbols, names, and genomic coordinates of the 15 telomere-related genes for which variants are captured, from [Burren et al. (2024)](https://www.nature.com/articles/s41588-024-01884-7).
 
 No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 1.	DCLRE1B -	DNA cross-link repair 1B	- chr1:113905326-113914086
@@ -110,133 +98,115 @@ No.	Gene Symbol	- Gene Full Name - Genomic coordinates
 15.	RTEL1	- Regulator of telomere elongation helicase 1	- chr20:63658312-63696245
 
 ## File Descriptions
-* **`Kidney_TCGA_KICH_curl.tsv`**: A TSV file containing all the UUIDs for the TCGA project of interest. This file specifically includes UUIDs for both normal and tumor BAM files from the TCGA-KICH project.
-* **`Kidney_TCGA_KICH_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are telomeric coordinates obtained using UCSC's LiftOver tool.
-* **`bamindex.sh`**: A Bash script that uses samtools to generate corresponding BAI index files for the downloaded BAM files.
-* **`Kidney_TCGA_KICH.py`**: A Python script that runs qmotif on the BAM and BAI files to analyze telomere content.
-* **`Kidney_TCGA_KICH_gene_loop.sh`**: A Bash script that performs curl requests to download and slice BAM files based on specified genomic regions. The regions used here are for 15 telomere-related genes.
-* **`runbcftools.sh`**: A Bash script that runs the bcftools mpileup command on all BAM files to call variants for 15 telomere-related genes.
-* **`variantstxt.sh`**: A Bash script that loops over all generated VCF files and formats the variant data into TXT files. Each line is sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format for the corresponding BAM file.
-* **`allgenotype.py`**: A Python script that performs genotype encoding, mapping: "0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None
+
+* **`Snakefile`** — defines the full pipeline as a set of Snakemake rules, run per sample
+* **`Kidney_TCGA_KICH_curl.tsv`** — TSV file containing UUIDs for the TCGA project of interest; includes UUIDs for both normal and tumor BAM files from the TCGA-KICH project
+* **`slice_bam_telomere.sh`** — performs a curl request to download and slice one sample's BAM file based on telomeric coordinates (obtained using UCSC's LiftOver tool)
+* **`slice_bam_genes.sh`** — performs a curl request to download and slice one sample's BAM file based on the 15 telomere-related gene regions
+* **`run_qmotif.py`** — runs qmotif on one sample's BAM and BAI files to analyze telomere content
+* **`run_bcftools.sh`** — runs bcftools mpileup/call on one sample's gene-region BAM file to call variants
+* **`variants_to_txt.sh`** — formats one sample's VCF file into a plain TXT file, with each line in CHROM\tPOS\tREF\tALT\t%GT\n format
+* **`aggregate_genotypes.py`** — encodes genotypes ("0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None) across all samples and produces the final mutation summary CSV
+
+* **Note**: This pipeline previously ran as a set of standalone scripts executed manually in sequence, looping over hardcoded sample lists. It has since been converted to a Snakemake pipeline: each script now processes one sample at a time, and Snakemake automatically handles looping, dependency tracking, and resuming after failures.
+
+## Setup
+
+1. Clone the repository
+
+```
+git clone https://github.com/paribytes/TeloQuest.git
+cd TeloQuest
+```
+2. Create conda environments
+
+This pipeline depends on specific versions of samtools and bcftools, since later versions of these tools can call variants slightly differently (tested difference: roughly ±1–2% in total mutation counts). To keep results reproducible, this pipeline was built and validated using samtools 1.12 and bcftools 1.21.
+
+Because these two versions require incompatible versions of htslib, they can't be installed in the same conda environment. Create two separate environments:
+
+```
+conda create -n samtools_1_12_env -c bioconda -c conda-forge samtools=1.12
+conda create -n bcftools_1_21_env -c bioconda -c conda-forge bcftools=1.21
+```
+
+If conda's solver fails, try setting flexible channel priority first:
+```
+conda config --set channel_priority flexible
+```
+Create a third environment for running the pipeline itself:
+```
+conda create -n teloquest_env -c bioconda -c conda-forge snakemake pandas
+```
+
+3. Update tool paths
+
+The Snakefile and shell scripts call samtools and bcftools using absolute paths, since they live in separate environments. After creating the environments above, find their install locations:
+
+```
+conda activate samtools_1_12_env && which samtools
+conda activate bcftools_1_21_env && which bcftools
+```
+Update the paths at the top of the Snakefile, `run_bcftools.sh`, and `variants_to_txt.sh` if yours differ from the defaults.
+
+4. GDC authentication token
+
+Generate a token from the GDC Data Portal (requires dbGaP authorized access) and save it as `gdc-user-token.txt` in the repo root. See the token notes under [Requirements](requirements).
 
 
-* **Note**: The GDC Portal allows you to download **BAM files and other controlled-access files for only one project at a time**. If you generate multiple tokens simultaneously, the system will automatically invalidate the second-to-last token, even if it has not been used. Additionally, once a token has been used to download files, it will immediately expire. Therefore, every time you need to download new files, you must obtain a **new token**.
+5. Reference genome
+
+Place `GRCh38.d1.vd1.fa` in the repo root (see [Additional Things to Prepare](additional-things-to-prepare)).
+
+6. qmotif
+
+Make sure `qmotif` and its dependencies are on your PATH, and that `qmotif.ini` is present in the repo root.
+
+7. Sample sheet
+
+Provide your TSV file (see [Additional Things to Prepare](additional-things-to-prepare)), named to match what's referenced at the top of the Snakefile.
+
+If your TSV was edited in Excel, check for hidden carriage returns or blank trailing lines, which can cause sample-parsing errors. Clean these with:
+```
+tr -d '\r' < your_file.tsv | grep -v '^[[:space:]]*$' > cleaned_file.tsv
+```
 
 ## Usage
-## Sequence of Execution
-To use the pipeline, run the scripts in the following order:
-1. `Kidney_TCGA_KICH_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to telomeric regions)
-2. `bamindex.sh` (requires: samtools, BAM files, generates: BAI files)
-3. `Kidney_TCGA_KICH.py` (requires: qmotif, BAM and BAI files, generates: `log.txt` and `output.txt` files)
-4. `Kidney_TCGA_KICH_gene_loop.sh` (requires: `Kidney_TCGA_KICH_curl.tsv`, generates: sliced BAM files according to 15 telomere-related genes)
-5. `runbcftools.sh` (requires: GRCh38 reference fasta file, bcftools, sliced BAM files according to 15 telomere-related genes, generates: VCF files)
-6. `variantstxt.sh` (requires: VCF files, generates: Plain TXT files with variant data)
-7. `allgenotype.py` (requires: Folder of TXT files with variant data, generates: summary CSV file of mutation counts per file)
 
-
-* **Download Recommendations**: For optimal performance when downloading these files, we recommend using a Linux-based system or macOS. Due to the large file sizes, these operating systems tend to handle extensive downloads more reliably and efficiently than some alternatives. Additionally, we suggest ensuring a stable internet connection to minimize interruptions during the download process.
-
-* **Note**: When working with long-running processes, such as data analysis scripts or large data transfers, it’s often helpful to use tools like `tmux` and `nohup` to keep the process running even if your session disconnects. Documentation on [tmux](https://github.com/tmux/tmux/wiki) and [nohup](https://phoenixnap.com/kb/linux-nohup) available here.
-
-## Detailed Steps
-1. **Download the (sliced) BAM files for telomeric regions**
-* Run `Kidney_TCGA_KICH_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
-* Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
+Activate the pipeline environment:
+```
+conda activate teloquest_env
+```
+Do a dry run first, to check the pipeline is wired up correctly without downloading or computing anything:
+```
+snakemake --cores 1 -n
+```
+Then run for real:
 
 ```
-chmod +x Kidney_TCGA_KICH_loop.sh
+snakemake --cores N
 ```
+Replace `N` with the number of cores to use in parallel.
+
+* **Download Recommendations**: For optimal performance, we recommend using a Linux-based system or macOS, given the large file sizes involved. Ensure a stable internet connection to minimize interruptions.
+
+For long-running jobs (macOS only): prevent your machine from sleeping mid-run:
 
 ```
-./Kidney_TCGA_KICH_loop.sh
-```
-**OR**
-
-```
-bash Kidney_TCGA_KICH_loop.sh
+caffeinate -i snakemake --cores N
 ```
 
-2. **Get the BAM Index files for each BAM file**
-* Before running bamindex.sh, ensure samtools is installed, and that all the BAM files are located in the same directory.
+On Linux or an HPC cluster, submit this as a background/queued job instead — see documentation on [tmux](https://github.com/tmux/tmux/wiki) and [nohup](https://phoenixnap.com/kb/linux-nohup) for keeping long processes running across disconnected sessions.
 
-```
-chmod +x bamindex.sh
-```
-
-```
-./bamindex.sh
-```
-**OR**
-
-```
-bash bamindex.sh
-```
-
-3. **Run qmotif with Kidney_TCGA_KICH.py**
-* Before running this script, make sure the following are in place:
-  1. qmotif is installed and accessible from your system's path.
-  2. You’ve set the correct paths to your qmotif executable, as well as your BAM and BAI input files.
-
-* This script expects input file names without extensions (i.e., no .bam or .bai).
-* A quick way to prepare the list:
-I copied the names of all the BAI files generated at the end of the previous script (bamindex.sh), pasted them into a Google Doc, and used the Find and Replace feature (Cmd + F on Mac or Ctrl + F on Windows). I searched for “.bai” and replaced it with an empty string using the Replace All feature.
-
-```
-python3 Kidney_TCGA_KICH.py
-```
-
-4. **Download the (sliced) BAM files for 15 telomere-related genes regions**
-
-- Run `Kidney_TCGA_KICH_gene_loop.sh` to download the sliced BAM files from the GDC Data Portal. Make sure to:
-- Include regions that you want the sliced BAM files to have, and that both the token and `Kidney_TCGA_KICH_curl.tsv` are in the same folder.
-
-```
-chmod +x Kidney_TCGA_KICH_gene_loop.sh
-```
-
-```
-./Kidney_TCGA_KICH_gene_loop.sh
-```
-
-**OR**
-
-```
-bash Kidney_TCGA_KICH_gene_loop.sh
-```
-
-5. **Call variants using bcftools**
-
-- Run `runbcftools.sh` to call variants for the 15 telomere-related genes across all sliced BAM files. Make sure the GRCh38 reference FASTA (`GRCh38.d1.vd1.fa`) is in the same folder.
-
-```
-bash runbcftools.sh
-```
-
-6. **Format variants into TXT files**
-
-- Run `variantstxt.sh` to convert the VCF files into TXT files, with each line sorted in the CHROM\tPOS\tREF\tALT\t%GT\n format.
-
-```
-bash variantstxt.sh
-```
-
-7. **Encode genotypes into a summary CSV**
-
-- Run `allgenotype.py` to encode genotypes ("0/0" → 0, "0/1" → 1, "1/1" → 2, "./." → None) and generate the final mutation summary CSV file used for the machine learning model.
-
-```
-python3 allgenotype.py
-```
+If the pipeline stops partway through (e.g., due to token expiry or a network interruption), just rerun the same `snakemake` command — completed steps are cached and won't be redone.
 
 ## Outputs
 
-1. `{ProjectID}_${CaseID}_${SampleType}.bam`: BAM files sliced according to telomeric regions (output of `Kidney_TCGA_KICH_loop.sh`)
-2. `{filename}.bai`: BAM index (BAI) files for the sliced BAM files (output of `bamindex.sh`)
-3. `{sequence_name}_terminal_output.txt`: Chromosome-specific telomeric read counts (output of `Kidney_TCGA_KICH.py`)
-4. `{ProjectID}_${CaseID}_${SampleType}.bam`: BAM files sliced according to the telomere-related genes (output of `Kidney_TCGA_KICH_gene_loop.sh`) 
-5. `{base_name}_variants.vcf.gz`: VCF file containing the genomic variants info for each file (output of `runbcftools.sh`)
-6. `{basename}.txt`: Generates a TXT file from the VCF file in the CHROM\tPOS\tREF\tALT\t%GT\n format (output of `variantstxt.sh`)
-7. `{ProjectID}_mutation_summary.csv`: A CSV file that has the mutation summary of all samples for that TCGA Project (output of `allgenotype.py`)
+* `data/{sample}_telomere.bam` and `.bai` — sliced/indexed BAM files for telomeric regions
+* `data/{sample}_genes.bam` and `.bai` — sliced/indexed BAM files for the 15 telomere-related gene regions
+* `results/{sample}_log.txt`, `{sample}_output.txt`, `{sample}_terminal_output.txt` — qmotif outputs, including chromosome-specific telomeric read counts
+* `vcf/{sample}_variants.vcf.gz` — called variants per sample
+* `txt/{sample}_variants.txt` — plain-text genotype calls per sample, in CHROM\tPOS\tREF\tALT\t%GT\n format
+* `results/mutation_summary.csv` — final mutation summary across all samples, used as input for the machine learning model
 
 ## Citation
  If you use TeloQuest, please cite our [paper](https://academic.oup.com/biomethods/article/10/1/bpaf069/8254362)
